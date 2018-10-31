@@ -9,7 +9,7 @@ MFT_tidy <-  MFT %>%
   tbl_df() %>% 
   distinct(Sending_Facility_ID, .keep_all = TRUE)   
 # We had one facility with a change in Sending_Facility_ID, so this hard codes the info in to make sure it's included in the cleaned MFT
-new_BTT_row <- data.frame("1508809427","Banner Tucson","Banner-University Medical Center-South Campus")
+new_BTT_row <- data.frame("1508809427","Parent Org","Facility Name")
 names(new_BTT_row) <- names(MFT_tidy)
 MFT_tidy <- rbind(MFT_tidy,new_BTT_row)
 
@@ -20,9 +20,9 @@ MFT_tidy <- rbind(MFT_tidy,new_BTT_row)
 df_files_orgPR <- df_filesPR %>% 
   tbl_df() %>% 
   left_join(MFT_tidy, by = "Sending_Facility_ID")  %>%
-  mutate(Parent_Organization = ifelse(Facility_Name %in% c("Banner-University Medical Center-Tucson Campus",
-                                                           "Banner-University Medical Center-South Campus"),
-                                      "Banner Tucson", Parent_Organization)) %>% ##UPDATE AFTER ~10/01 when Banner Tucson switches to Cerner
+  mutate(Parent_Organization = ifelse(Facility_Name %in% c("Facility - One Campus",
+                                                           "Facility - Two Campus"),
+                                      "Parent Org", Parent_Organization)) %>% 
   mutate(Arrived_Date_Time = as.POSIXct(Arrived_Date_Time, format = "%Y-%m-%d %H:%M:%S", tz = "UTC") ) %>% 
   mutate(Arrived_Date_CDT_Time = format(Arrived_Date_Time, tz = "America/Chicago") ) %>% 
   mutate(Arrived_Time_CDT = strftime(Arrived_Date_Time, format="%H:%M:%S", tz = "America/Chicago")) %>%
